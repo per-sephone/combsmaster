@@ -1,25 +1,20 @@
 import hashlib
-from string import digits, ascii_letters
+import logging
 from itertools import product
 
-match = "0badbeef"
-current = digits+ascii_letters
+def main(): #made into function for ease of termination
+    logging.basicConfig(filename="logfilename.log", level=logging.INFO)
+    chars = 'zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA9876543210'
 
-for n in range(1, 100):
-    for comb in product(current, repeat=n):
-        print(''.join(comb) + "d470d406")
-        testing = ''.join(comb) + "d470d406"
-        hash = hashlib.md5(testing.encode('ascii')).hexdigest()
-        if hash[:8] == match:
-            print('Match:"' + testing + '", md5:' + hash)
-            break
-        print (''.join(comb))
+    match = '0badbeef'
 
-#while True:
-#    testing = str(current) + "d470d406"
-#    hash = hashlib.md5(testing.encode('ascii')).hexdigest()
-#    if hash[:8] == match:
-#        print('Match:"' + testing + '", md5:' + hash)
-#        break
-#    current = current + 'a'
-#    print(current, " ", hash)
+    for n in range(8, 1, -1): #I don't think it'll ever hit 62^20 honestly
+        for comb in product(chars, repeat=n):
+            testing = (''.join(comb)[::-1]) + "d470d406"
+            hash = hashlib.md5(testing.encode('ascii')).hexdigest()
+            if match in hash:
+                logging.info('Match:' + testing + ', md5:' + hash)
+                return 0; 
+            print(testing) #can be added back for testing
+
+main()
